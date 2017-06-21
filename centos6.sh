@@ -7,18 +7,7 @@ MYIP=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*
 MYIP2="s/xxxxxxxxx/$MYIP/g";
 source="https://raw.githubusercontent.com/AdityaWg/autoscript/master";
 adityawg="https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master";
-# up
-wget -q -O adit $source/file/not.txt
-if ! grep -w -q $MYIP adit; then
-clear
-echo "Gagal Menginstal VPS :V"
-echo "Info Lebih Lanjut Hub. AdityaWg (WA 082210988552)"
-rm /root/adit
-rm -f /root/adit
-rm /root/centos6.sh
-rm -f /root/centos6.sh
-exit
-fi
+
 # update software server
 yum update -y
 
