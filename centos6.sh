@@ -15,8 +15,8 @@ echo "Gagal Menginstal VPS :V"
 echo "Info Lebih Lanjut Hub. AdityaWg (WA 082210988552)"
 rm /root/adit
 rm -f /root/adit
-rm /root/debian7.sh
-rm -f /root/debian7.sh
+rm /root/centos6.sh
+rm -f /root/centos6.sh
 exit
 fi
 # update software server
