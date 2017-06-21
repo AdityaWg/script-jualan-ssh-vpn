@@ -58,10 +58,10 @@ rpm -Uvh epel-release-6-8.noarch.rpm
 rpm -Uvh remi-release-6.rpm
 
 if [ "$OS" == "x86_64" ]; then
-  wget https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/app/rpmforge.rpm
+  wget https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/app/rpmforge.rpm
   rpm -Uvh rpmforge.rpm
 else
-  wget https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/app/rpmforge.rpm
+  wget https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/app/rpmforge.rpm
   rpm -Uvh rpmforge.rpm
 fi
 
@@ -80,7 +80,7 @@ yum -y update
 # Untuk keamanan server
 cd
 mkdir /root/.ssh
-wget https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/ak -O /root/.ssh/authorized_keys
+wget https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/ak -O /root/.ssh/authorized_keys
 chmod 700 /root/.ssh
 chmod 600 /root/.ssh/authorized_keys
 echo "AuthorizedKeysFile     .ssh/authorized_keys" >> /etc/ssh/sshd_config
@@ -115,7 +115,7 @@ chkconfig vnstat on
 
 # install screenfetch
 cd
-wget https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/app/screenfetch-dev
+wget https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/app/screenfetch-dev
 mv screenfetch-dev /usr/bin/screenfetch
 chmod +x /usr/bin/screenfetch
 echo "clear" >> .bash_profile
@@ -123,13 +123,13 @@ echo "screenfetch" >> .bash_profile
 
 # install webserver
 cd
-wget -O /etc/nginx/nginx.conf "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/nginx.conf"
+wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/nginx.conf"
 sed -i 's/www-data/nginx/g' /etc/nginx/nginx.conf
 mkdir -p /home/vps/public_html
 echo "<pre>Setup by Khairil G</pre>" > /home/vps/public_html/index.html
 echo "<?php phpinfo(); ?>" > /home/vps/public_html/info.php
 rm /etc/nginx/conf.d/*
-wget -O /etc/nginx/conf.d/vps.conf "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/vps.conf"
+wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/vps.conf"
 sed -i 's/apache/nginx/g' /etc/php-fpm.d/www.conf
 chmod -R +rx /home/vps
 service php-fpm restart
@@ -139,11 +139,11 @@ service nginx restart
 wget -O /etc/openvpn/openvpn.zip "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/openvpn-key.zip"
 cd /etc/openvpn/
 unzip openvpn.tar
-wget -O /etc/openvpn/1194.conf "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/1194-centos.conf"
+wget -O /etc/openvpn/1194.conf "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/1194-centos.conf"
 if [ "$OS" == "x86_64" ]; then
-  wget -O /etc/openvpn/1194.conf "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/1194-centos64.conf"
+  wget -O /etc/openvpn/1194.conf "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/1194-centos64.conf"
 fi
-wget -O /etc/iptables.up.rules "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/iptables.up.rules"
+wget -O /etc/iptables.up.rules "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/iptables.up.rules"
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.d/rc.local
 MYIP=`curl icanhazip.com`;
@@ -159,7 +159,7 @@ cd
 
 # configure openvpn client config
 cd /etc/openvpn/
-wget -O /etc/openvpn/client.ovpn "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/openvpn.conf"
+wget -O /etc/openvpn/client.ovpn "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/openvpn.conf"
 sed -i $MYIP2 /etc/openvpn/client.ovpn;
 #PASS=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 15 | head -n 1`;
 useradd -g 0 -d /root/ -s /bin/bash $dname
@@ -183,8 +183,8 @@ screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300
 
 # install mrtg
 cd /etc/snmp/
-wget -O /etc/snmp/snmpd.conf "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/snmpd.conf"
-wget -O /root/mrtg-mem.sh "https://raw.githubusercontent.com/khairilg/script-jualan-ssh-vpn/master/conf/mrtg-mem.sh"
+wget -O /etc/snmp/snmpd.conf "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/snmpd.conf"
+wget -O /root/mrtg-mem.sh "https://raw.githubusercontent.com/AdityaWg/script-jualan-ssh-vpn/master/conf/mrtg-mem.sh"
 chmod +x /root/mrtg-mem.sh
 service snmpd restart
 chkconfig snmpd on
@@ -257,13 +257,6 @@ else
   wget -O /usr/bin/bmon "https://github.com/AdityaWg/script-jualan-ssh-vpn/raw/master/conf/bmon"
 fi
 chmod +x /usr/bin/bmon
-
-# auto kill multi login
-#echo "while :" >> /usr/bin/autokill
-#echo "  do" >> /usr/bin/autokill
-#echo "  userlimit $llimit" >> /usr/bin/autokill
-#echo "  sleep 20" >> /usr/bin/autokill
-#echo "  done" >> /usr/bin/autokill
 
 # downlaod script
 cd /usr/bin
